@@ -7,7 +7,7 @@
     "test": "mocha",
     "start": "nodemon app.js"
   },
-  "author": "abhinav_rai",
+  "author": "daval pargal",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.3",
