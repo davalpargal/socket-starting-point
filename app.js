@@ -1,29 +1,40 @@
 var app = require('express')();
+var request = require('request');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var TIME = 4000;
 
-
+const options = {  
+  method: 'GET',
+  uri: 'http://localhost:8086/query',
+  qs: {
+    pretty: true,
+    db: "supply_data",
+    q: "Select * from supply_data where vehicle_type='BLUE_BIRD'"
+  }
+}
 app.get('/', function(req, res){
   res.sendFile('index.html', { root: __dirname });
 });
 
-//console.log(__dirname); -> /Users/admin/Documents/git_repos/test_socketIo
-
 var users = 0;
-var obj = {'a':1,'b':2};
-//Whenever someone connects this gets executed
 io.on('connection', function(socket){
   users++;
-  console.log('A user connected'+users);
+  console.log('A user connected '+users);
+
   //io.sockets.emit('broadcast',users);
   var val;
   socket.on('clientData',function(data){ val=data; });
+  request(options,function(err,response){
+    socket.emit('dbData',response.body);
+      // console.log(response);
+      // console.log('here!!');
+  });
 
-  setInterval(function(){
-	  //Sending an object when emmiting an event
-  	socket.emit('dbData',val);
-	}, TIME);
+ //  setInterval(function(){
+	//   //Sending an object when emmiting an event
+ //  	socket.emit('dbData',val);
+	// }, TIME);
 
 
   //Whenever someone disconnects this piece of code executed
